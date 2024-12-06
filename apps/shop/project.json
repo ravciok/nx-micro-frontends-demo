@@ -7,80 +7,27 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/angular:webpack-browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "options": {
-        "outputPath": "dist/apps/shop",
-        "index": "apps/shop/src/index.html",
-        "main": "apps/shop/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
-        "tsConfig": "apps/shop/tsconfig.app.json",
-        "inlineStyleLanguage": "scss",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "apps/shop/public",
-            "output": "."
-          }
-        ],
-        "styles": [
-          "apps/shop/src/styles.scss"
-        ],
-        "scripts": [],
-        "customWebpackConfig": {
-          "path": "apps/shop/webpack.config.js"
-        },
-        "commonChunk": false
-      },
+      "executor": "@angular-architects/native-federation:build",
+      "options": {},
       "configurations": {
         "production": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "7kb"
-            }
-          ],
-          "outputHashing": "all",
-          "customWebpackConfig": {
-            "path": "apps/shop/webpack.prod.config.js"
-          }
+          "target": "shop:esbuild:production"
         },
         "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "vendorChunk": true,
-          "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true
+          "target": "shop:esbuild:development",
+          "dev": true
         }
       },
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nx/angular:dev-server",
+      "executor": "@angular-architects/native-federation:build",
       "options": {
-        "port": 4201,
-        "publicHost": "http://localhost:4201"
-      },
-      "configurations": {
-        "production": {
-          "buildTarget": "shop:build:production"
-        },
-        "development": {
-          "buildTarget": "shop:build:development"
-        }
-      },
-      "defaultConfiguration": "development"
+        "target": "shop:serve-original:development",
+        "rebuildDelay": 0,
+        "dev": true,
+        "port": 0
+      }
     },
     "extract-i18n": {
       "executor": "ngx-build-plus:extract-i18n",
@@ -117,6 +64,74 @@
           "buildTarget": "shop:build:production"
         }
       }
+    },
+    "esbuild": {
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/shop",
+        "index": "apps/shop/src/index.html",
+        "polyfills": [
+          "zone.js",
+          "es-module-shims"
+        ],
+        "tsConfig": "apps/shop/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/shop/public",
+            "output": "."
+          }
+        ],
+        "styles": [
+          "apps/shop/src/styles.scss"
+        ],
+        "scripts": [],
+        "browser": "apps/shop/src/main.ts"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "7kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve-original": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "port": 4201,
+        "publicHost": "http://localhost:4201"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "shop:esbuild:production"
+        },
+        "development": {
+          "buildTarget": "shop:esbuild:development"
+        }
+      },
+      "defaultConfiguration": "development"
     }
   }
 }

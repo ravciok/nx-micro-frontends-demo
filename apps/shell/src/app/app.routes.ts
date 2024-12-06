@@ -1,6 +1,6 @@
 import { NxWelcomeComponent } from './nx-welcome.component';
 import { Route } from '@angular/router';
-import { loadRemoteModule } from '@angular-architects/module-federation';
+import { loadRemoteModule } from '@angular-architects/native-federation';
 
 export const appRoutes: Route[] = [
   {
@@ -9,21 +9,13 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'shop',
-    loadChildren: () => loadRemoteModule({
-      type: 'manifest',
-      remoteName: 'shop',
-      exposedModule: './Routes'
-    })
-      .then(m => m.appRoutes)
+    loadChildren: () => loadRemoteModule('shop', './Routes')
+      .then((m) => m.appRoutes)
   },
   {
     path: 'cart',
-    loadChildren: () => loadRemoteModule({
-      type: 'manifest',
-      remoteName: 'cart',
-      exposedModule: './Routes'
-    })
-      .then(m => m.appRoutes)
+    loadChildren: () => loadRemoteModule('cart', './Routes')
+      .then((m) => m.appRoutes)
   },
   {
     path: '**',

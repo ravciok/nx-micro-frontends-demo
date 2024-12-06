@@ -7,80 +7,27 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/angular:webpack-browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "options": {
-        "outputPath": "dist/apps/cart",
-        "index": "apps/cart/src/index.html",
-        "main": "apps/cart/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
-        "tsConfig": "apps/cart/tsconfig.app.json",
-        "inlineStyleLanguage": "scss",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "apps/cart/public",
-            "output": "."
-          }
-        ],
-        "styles": [
-          "apps/cart/src/styles.scss"
-        ],
-        "scripts": [],
-        "customWebpackConfig": {
-          "path": "apps/cart/webpack.config.js"
-        },
-        "commonChunk": false
-      },
+      "executor": "@angular-architects/native-federation:build",
+      "options": {},
       "configurations": {
         "production": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "7kb"
-            }
-          ],
-          "outputHashing": "all",
-          "customWebpackConfig": {
-            "path": "apps/cart/webpack.prod.config.js"
-          }
+          "target": "cart:esbuild:production"
         },
         "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "vendorChunk": true,
-          "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true
+          "target": "cart:esbuild:development",
+          "dev": true
         }
       },
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nx/angular:dev-server",
+      "executor": "@angular-architects/native-federation:build",
       "options": {
-        "port": 4202,
-        "publicHost": "http://localhost:4202"
-      },
-      "configurations": {
-        "production": {
-          "buildTarget": "cart:build:production"
-        },
-        "development": {
-          "buildTarget": "cart:build:development"
-        }
-      },
-      "defaultConfiguration": "development"
+        "target": "cart:serve-original:development",
+        "rebuildDelay": 0,
+        "dev": true,
+        "port": 0
+      }
     },
     "extract-i18n": {
       "executor": "ngx-build-plus:extract-i18n",
@@ -117,6 +64,74 @@
           "buildTarget": "cart:build:production"
         }
       }
+    },
+    "esbuild": {
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/cart",
+        "index": "apps/cart/src/index.html",
+        "polyfills": [
+          "zone.js",
+          "es-module-shims"
+        ],
+        "tsConfig": "apps/cart/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/cart/public",
+            "output": "."
+          }
+        ],
+        "styles": [
+          "apps/cart/src/styles.scss"
+        ],
+        "scripts": [],
+        "browser": "apps/cart/src/main.ts"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "7kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve-original": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "port": 4202,
+        "publicHost": "http://localhost:4202"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "cart:esbuild:production"
+        },
+        "development": {
+          "buildTarget": "cart:esbuild:development"
+        }
+      },
+      "defaultConfiguration": "development"
     }
   }
 }
