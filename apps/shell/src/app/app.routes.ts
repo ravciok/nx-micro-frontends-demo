@@ -1,21 +1,32 @@
 import { NxWelcomeComponent } from './nx-welcome.component';
 import { Route } from '@angular/router';
+import { loadRemoteModule } from '@angular-architects/module-federation';
 
 export const appRoutes: Route[] = [
   {
     path: '',
-    component: NxWelcomeComponent,
-  },
-  {
-    path: 'cart',
-    loadChildren: () => import('cart/Routes').then((m) => m!.remoteRoutes),
+    component: NxWelcomeComponent
   },
   {
     path: 'shop',
-    loadChildren: () => import('shop/Routes').then((m) => m!.remoteRoutes),
+    loadChildren: () => loadRemoteModule({
+      type: 'manifest',
+      remoteName: 'shop',
+      exposedModule: './Routes'
+    })
+      .then(m => m.appRoutes)
+  },
+  {
+    path: 'cart',
+    loadChildren: () => loadRemoteModule({
+      type: 'manifest',
+      remoteName: 'cart',
+      exposedModule: './Routes'
+    })
+      .then(m => m.appRoutes)
   },
   {
     path: '**',
-    redirectTo: '',
-  },
+    redirectTo: ''
+  }
 ];

@@ -8,25 +8,33 @@
   "targets": {
     "build": {
       "executor": "@nx/angular:webpack-browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/cart",
         "index": "apps/cart/src/index.html",
         "main": "apps/cart/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/cart/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/cart/public"
+            "input": "apps/cart/public",
+            "output": "."
           }
         ],
-        "styles": ["apps/cart/src/styles.scss"],
+        "styles": [
+          "apps/cart/src/styles.scss"
+        ],
         "scripts": [],
         "customWebpackConfig": {
-          "path": "apps/cart/webpack.config.ts"
-        }
+          "path": "apps/cart/webpack.config.js"
+        },
+        "commonChunk": false
       },
       "configurations": {
         "production": {
@@ -44,7 +52,7 @@
           ],
           "outputHashing": "all",
           "customWebpackConfig": {
-            "path": "apps/cart/webpack.prod.config.ts"
+            "path": "apps/cart/webpack.prod.config.js"
           }
         },
         "development": {
@@ -75,9 +83,10 @@
       "defaultConfiguration": "development"
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "ngx-build-plus:extract-i18n",
       "options": {
-        "buildTarget": "cart:build"
+        "buildTarget": "cart:build",
+        "extraWebpackConfig": "apps/cart/webpack.config.js"
       }
     },
     "lint": {
@@ -85,7 +94,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/cart/jest.config.ts"
       }

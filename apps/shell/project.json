@@ -8,25 +8,33 @@
   "targets": {
     "build": {
       "executor": "@nx/angular:webpack-browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/shell",
         "index": "apps/shell/src/index.html",
         "main": "apps/shell/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/shell/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/shell/public"
+            "input": "apps/shell/public",
+            "output": "."
           }
         ],
-        "styles": ["apps/shell/src/styles.scss"],
+        "styles": [
+          "apps/shell/src/styles.scss"
+        ],
         "scripts": [],
         "customWebpackConfig": {
-          "path": "apps/shell/webpack.config.ts"
-        }
+          "path": "apps/shell/webpack.config.js"
+        },
+        "commonChunk": false
       },
       "configurations": {
         "production": {
@@ -44,7 +52,7 @@
           ],
           "outputHashing": "all",
           "customWebpackConfig": {
-            "path": "apps/shell/webpack.prod.config.ts"
+            "path": "apps/shell/webpack.prod.config.js"
           }
         },
         "development": {
@@ -59,7 +67,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nx/angular:module-federation-dev-server",
+      "executor": "@nx/angular:dev-server",
       "options": {
         "port": 4200,
         "publicHost": "http://localhost:4200"
@@ -75,9 +83,10 @@
       "defaultConfiguration": "development"
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "ngx-build-plus:extract-i18n",
       "options": {
-        "buildTarget": "shell:build"
+        "buildTarget": "shell:build",
+        "extraWebpackConfig": "apps/shell/webpack.config.js"
       }
     },
     "lint": {
@@ -85,7 +94,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/shell/jest.config.ts"
       }
